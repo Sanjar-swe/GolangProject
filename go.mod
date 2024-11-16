@@ -2,7 +2,11 @@ module github.com/Sanjar-swe/GolangProject
 
 go 1.23.3
 
-require github.com/gorilla/mux v1.8.1
+require (
+	github.com/gorilla/mux v1.8.1
+	gorm.io/driver/postgres v1.5.9
+	gorm.io/gorm v1.25.12
+)
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -14,6 +18,4 @@ require (
 	golang.org/x/crypto v0.29.0 // indirect
 	golang.org/x/sync v0.9.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
-	gorm.io/driver/postgres v1.5.9 // indirect
-	gorm.io/gorm v1.25.12 // indirect
 )

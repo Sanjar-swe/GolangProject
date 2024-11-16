@@ -37,9 +37,20 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func CreateMessage (w http.ResponseWriter, r *http.Request) {
+	// Обновить POST ручку, чтобы она записывала содержимое task в БД (Передаем джейсон с полями task и is_done)
+
+}
+
+func GetMessages (w http.ResponseWriter, r *http.Request) {
+	// Обновить GET ручку, чтобы она выводила слайс task (все message, которые лежат в БД)
+}
+
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/hello", HelloHandler).Methods("GET")
 	router.HandleFunc("/api/task", PostHandler).Methods("POST")
+	router.HandleFunc("/api/messages", CreateMessage).Methods("POST")
+	router.HandleFunc("/api/messages/", GetMessages).Methods("GET")
 	http.ListenAndServe(":8080", router)
 }
