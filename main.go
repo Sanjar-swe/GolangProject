@@ -81,6 +81,6 @@ func main() {
 	router.HandleFunc("/api/hello", HelloHandler).Methods("GET")
 	router.HandleFunc("/api/task", PostHandler).Methods("POST")
 	router.HandleFunc("/api/messages", CreateMessage).Methods("POST")
-	router.HandleFunc("/api/messages/", GetMessages).Methods("GET")
+	router.HandleFunc("/api/messages", GetMessages).Methods("GET")
 	http.ListenAndServe(":8080", router)
 }
