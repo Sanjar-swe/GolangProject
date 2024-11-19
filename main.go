@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -22,7 +23,7 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
+// POST
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		Task string `json:"task"`
@@ -35,6 +36,47 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	task = data.Task
 	fmt.Println(w, "Task updates succesfully")
 
+}
+// PATCH handler для обновления задачи по ID
+func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
+	// Получаем ID из URL	
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid task ID", http.StatusBadRequest)
+		return
+	}
+
+	// Проверяем, существует ли задача с таким ID
+	var task Message
+	if err := DB.First(&task, id).Error; err != nil {
+		http.Error(w, "Task not found", http.StatusNotFound)
+		return
+	}
+	// Декодируем тело запроса
+	var updates struct {
+		Task *string `json:"task"`
+		IsDone *bool `json:"is_done"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&updates); err != nil {
+		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+		return
+	}
+	// Обновляем только те поля, которые переданы
+	if updates.Task != nil {
+		task.Task = *updates.Task
+	}	
+	if updates.IsDone != nil {
+		task.IsDone = *updates.IsDone
+	}
+	// Сохраняем изменения в базе данных
+	if err := DB.Save(&task).Error; err != nil{
+		http.Error(w, "Failed to update task", http.StatusInternalServerError)
+		return
+	}
+	// Возвращаем обновлённую задачу
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(task)	
 }
 
 func CreateMessage (w http.ResponseWriter, r *http.Request) {
@@ -82,5 +124,6 @@ func main() {
 	router.HandleFunc("/api/task", PostHandler).Methods("POST")
 	router.HandleFunc("/api/messages", CreateMessage).Methods("POST")
 	router.HandleFunc("/api/messages", GetMessages).Methods("GET")
+	router.HandleFunc("/api/messages/{id}", UpdateTaskHandler).Methods("PATCH")
 	http.ListenAndServe(":8080", router)
 }
