@@ -23,6 +23,42 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
+func GetMessages (w http.ResponseWriter, r *http.Request) {
+	// Обновить GET ручку, чтобы она выводила слайс task (все message, которые лежат в БД)
+	var messages []Message
+
+    // Получаем все сообщения из базы данных
+	if err := DB.Find(&messages).Error; err != nil {
+		http.Error(w, "Failed to retrieve messages", http.StatusInternalServerError)
+		return
+	}
+    // Отправляем все сообщения в ответе
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(messages) 
+}
+
+
+func CreateMessage (w http.ResponseWriter, r *http.Request) {
+	// Обновить POST ручку, чтобы она записывала содержимое task в БД (Передаем джейсон с полями task и is_done)
+	var data Message
+    // Декодирование JSON из запроса в структуру
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+		return
+	}
+
+    // Сохранение в базе данных
+	if err := DB.Create(&data).Error; err != nil{
+		http.Error(w, "Failed to create message", http.StatusInternalServerError)
+		return
+	}
+
+    // Ответ с подтверждением
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Message created successfully"})
+}
+
 // POST
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	var data struct {
@@ -79,38 +115,34 @@ func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(task)	
 }
 
-func CreateMessage (w http.ResponseWriter, r *http.Request) {
-	// Обновить POST ручку, чтобы она записывала содержимое task в БД (Передаем джейсон с полями task и is_done)
-	var data Message
-    // Декодирование JSON из запроса в структуру
-	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+// DeleteTaskHandler удаляет задачу из базы данных по её ID
+func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
+	// Получаем ID задачи из параметров URL и преобразуем его в число
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid task ID", http.StatusBadRequest)
 		return
-	}
+	}	
 
-    // Сохранение в базе данных
-	if err := DB.Create(&data).Error; err != nil{
-		http.Error(w, "Failed to create message", http.StatusInternalServerError)
+	// Проверяем, существует ли задача с указанным ID в базе данных
+	var task Message
+	if err := DB.First(&task, id).Error; err != nil {
+		http.Error(w, "Task not found", http.StatusNotFound)
 		return
-	}
+	}	
 
-    // Ответ с подтверждением
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Message created successfully"})
-}
-
-func GetMessages (w http.ResponseWriter, r *http.Request) {
-	// Обновить GET ручку, чтобы она выводила слайс task (все message, которые лежат в БД)
-	var messages []Message
-
-    // Получаем все сообщения из базы данных
-	if err := DB.Find(&messages).Error; err != nil {
-		http.Error(w, "Failed to retrieve messages", http.StatusInternalServerError)
+	// Удаляем найденную задачу из базы данных
+	if err := DB.Delete(&task).Error; err != nil {
+		http.Error(w, "Failed to delete task", http.StatusInternalServerError)
 		return
-	}
-    // Отправляем все сообщения в ответе
+	}	
+
+	// Возвращаем подтверждение успешного удаления
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(messages) 
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Task deleted successfully"})
+	
 }
 
 func main() {
@@ -125,5 +157,6 @@ func main() {
 	router.HandleFunc("/api/messages", CreateMessage).Methods("POST")
 	router.HandleFunc("/api/messages", GetMessages).Methods("GET")
 	router.HandleFunc("/api/messages/{id}", UpdateTaskHandler).Methods("PATCH")
+	router.HandleFunc("/api/messages/{id}", DeleteTaskHandler).Methods("DELETE")
 	http.ListenAndServe(":8080", router)
 }
