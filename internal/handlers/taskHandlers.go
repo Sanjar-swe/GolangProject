@@ -42,12 +42,18 @@ func (h *Handler) PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) PatchTaskHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid task ID", http.StatusBadRequest)
+		return
+	}
 	var task taskService.Message
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	updatedTask, error := h.Service.UpdateTaskByID(uint(task.ID), task)
+	updatedTask, error := h.Service.UpdateTaskByID(uint(id), task)
 	if error != nil {
 		http.Error(w, error.Error(), http.StatusInternalServerError)
 	}
