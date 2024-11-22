@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Sanjar-swe/GolangProject/internal/taskService"
 	"github.com/gorilla/mux"
 )
 
@@ -27,7 +28,7 @@ func (h *Handler) GetTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) PostTaskHandler(w http.ResponseWriter, r *http.Request) {
-	var task taskService.Task
+	var task taskService.Message
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
@@ -41,12 +42,12 @@ func (h *Handler) PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) PatchTaskHandler(w http.ResponseWriter, r *http.Request) {
-	var task taskService.Task
+	var task taskService.Message
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	updatedTask, error := h.Service.UpdateTaskByID(task.ID, task)
+	updatedTask, error := h.Service.UpdateTaskByID(uint(task.ID), task)
 	if error != nil {
 		http.Error(w, error.Error(), http.StatusInternalServerError)
 	}
@@ -61,7 +62,7 @@ func (h *Handler) DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
 		return
 	}
-	error := h.Service.DeleteTaskByID(id)
+	error := h.Service.DeleteTaskByID(uint(id))
 	if error != nil {
 		http.Error(w, error.Error(), http.StatusInternalServerError)
 	}
