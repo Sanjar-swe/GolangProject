@@ -9,6 +9,31 @@ import (
 	"github.com/gorilla/mux"
 )
 
+
+func main() {
+
+	database.InitDB()
+	database.DB.AutoMigrate(&taskService.Message{})
+
+	repo := taskService.NewTaskRepository(database.DB)
+	service := taskService.NewSerivce(repo)
+	handler := handlers.NewHandler(service)
+	router := mux.NewRouter()
+	// router.HandleFunc("/api/hello", HelloHandler).Methods("GET")
+	// router.HandleFunc("/api/task", PostHandler).Methods("POST")
+	// router.HandleFunc("/api/messages", CreateMessage).Methods("POST")
+	// router.HandleFunc("/api/messages", GetMessages).Methods("GET")
+	// router.HandleFunc("/api/messages/{id}", UpdateTaskHandler).Methods("PATCH")
+	// router.HandleFunc("/api/messages/{id}", DeleteTaskHandler).Methods("DELETE")
+
+	router.HandleFunc("/api/get", handler.GetTaskHandler).Methods("GET")
+	router.HandleFunc("/api/post", handler.PostTaskHandler).Methods("POST")
+	router.HandleFunc("/api/tasks/{id}", handler.PatchTaskHandler).Methods("PATCH")
+	router.HandleFunc("/api/tasks/{id}", handler.DeleteTaskHandler).Methods("DELETE")
+	http.ListenAndServe(":8080", router)
+}
+
+
 // var task string
 
 // type Task struct {
@@ -131,7 +156,7 @@ import (
 // 	}
 
 // 	// Удаляем найденную задачу из базы данных
-// 	if err := database.DB.Delete(&task).Error; err != nil {
+// 	if err := database.DB.Delete(&task).Error; err !UpdateTaskHandler= nil {
 // 		http.Error(w, "Failed to delete task", http.StatusInternalServerError)
 // 		return
 // 	}
@@ -142,26 +167,3 @@ import (
 // 	json.NewEncoder(w).Encode(map[string]string{"message": "Task deleted successfully"})
 
 // }
-
-func main() {
-
-	database.InitDB()
-	database.DB.AutoMigrate(&taskService.Message{})
-
-	repo := taskService.NewTaskRepository(database.DB)
-	service := taskService.NewSerivce(repo)
-	handler := handlers.NewHandler(service)
-	router := mux.NewRouter()
-	// router.HandleFunc("/api/hello", HelloHandler).Methods("GET")
-	// router.HandleFunc("/api/task", PostHandler).Methods("POST")
-	// router.HandleFunc("/api/messages", CreateMessage).Methods("POST")
-	// router.HandleFunc("/api/messages", GetMessages).Methods("GET")
-	// router.HandleFunc("/api/messages/{id}", UpdateTaskHandler).Methods("PATCH")
-	// router.HandleFunc("/api/messages/{id}", DeleteTaskHandler).Methods("DELETE")
-
-	router.HandleFunc("/api/get", handler.GetTaskHandler).Methods("GET")
-	router.HandleFunc("/api/post", handler.PostTaskHandler).Methods("POST")
-	router.HandleFunc("/api/tasks/{id}", handler.PatchTaskHandler).Methods("PATCH")
-	router.HandleFunc("/api/tasks/{id}", handler.DeleteTaskHandler).Methods("DELETE")
-	http.ListenAndServe(":8080", router)
-}
