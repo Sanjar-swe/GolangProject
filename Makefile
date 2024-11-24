@@ -19,9 +19,16 @@ migrate-down:
 # для удобства добавим команду run, которая будет запускать наше приложение
 run:
 	go run cmd/app/main.go # Сервер Запущен
-
+#commit main
 commit:
 	@read -p "Enter commit message: " msg; \
 	git add .; \
 	git commit -m "$$msg"; \
 	git push -u origin main
+
+commit-test:
+	@read -p "Enter commit message: " msg; \
+	git add .; \
+	git commit -m "$$msg"; \
+	git push -u origin test
+
