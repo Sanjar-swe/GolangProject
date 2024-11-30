@@ -1,17 +1,29 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/Sanjar-swe/GolangProject/internal/database"
 	"github.com/Sanjar-swe/GolangProject/internal/taskService"
+	"github.com/Sanjar-swe/GolangProject/internal/web/tasks"
 	"github.com/gorilla/mux"
 )
 
 type Handler struct {
 	Service *taskService.TaskService
+}
+
+// GetTasks implements tasks.StrictServerInterface.
+func (h *Handler) GetTasks(ctx context.Context, request tasks.GetTasksRequestObject) (tasks.GetTasksResponseObject, error) {
+	panic("unimplemented")
+}
+
+// PostTasks implements tasks.StrictServerInterface.
+func (h *Handler) PostTasks(ctx context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
+	panic("unimplemented")
 }
 
 // Нужна для создания структуры Handler на этапе инициализации приложения

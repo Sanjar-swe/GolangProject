@@ -7,8 +7,8 @@ import (
 	"github.com/Sanjar-swe/GolangProject/internal/handlers"
 	"github.com/Sanjar-swe/GolangProject/internal/taskService"
 	"github.com/Sanjar-swe/GolangProject/internal/web/tasks"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 
