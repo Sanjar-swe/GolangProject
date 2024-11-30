@@ -113,6 +113,15 @@ type PostTasksResponseObject interface {
 	VisitPostTasksResponse(w http.ResponseWriter) error
 }
 
+type PostTasks201JSONResponse Task
+
+func (response PostTasks201JSONResponse) VisitPostTasksResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Get all tasks
