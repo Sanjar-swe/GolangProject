@@ -6,6 +6,7 @@ import (
 	"github.com/Sanjar-swe/GolangProject/internal/database"
 	"github.com/Sanjar-swe/GolangProject/internal/handlers"
 	"github.com/Sanjar-swe/GolangProject/internal/taskService"
+	"github.com/Sanjar-swe/GolangProject/internal/web/tasks"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )

@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Task Managemen API
+  title: API
   version: 1.0.0
 paths:
   /tasks:
@@ -47,4 +47,4 @@ components:
         task:
           type: string
         is_done:
-type: bool
+          type: boolean
