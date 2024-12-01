@@ -12,14 +12,16 @@ type Handler struct {
 }
 
 // DeleteTasksId implements tasks.StrictServerInterface.
-func (h *Handler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
+func (h *Handler) DeleteTasksId(_ context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
 	// Обращаемся к сервису и удаляем задачу по ID
 	err := h.Service.DeleteTaskByID(uint(request.Id))
 	if err != nil {
 		return nil, err
 	}
-	// Возвращаем nil, так как у нас нет контента для ответа
-	return nil, nil
+	// Возвращаем сообщение об успешном удалении
+	return tasks.DeleteTasksId200JSONResponse{
+		Message: "Task deleted successfully",
+	}, nil
 }
 
 // PatchTasksId implements tasks.StrictServerInterface.

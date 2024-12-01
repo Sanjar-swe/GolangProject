@@ -16,8 +16,10 @@ import (
 func main() {
 
 	database.InitDB()
-	database.DB.AutoMigrate(&taskService.Message{})
-
+	// database.DB.AutoMigrate(&taskService.Message{})
+	if err := database.DB.AutoMigrate(&taskService.Message{}); err != nil {
+		log.Fatal(err)
+	}
 	repo := taskService.NewTaskRepository(database.DB)
 	service := taskService.NewSerivce(repo)
 	handler := handlers.NewHandler(service)
@@ -47,7 +49,9 @@ func main() {
 		}
 		return c.JSON(http.StatusOK, response)
 	})
+	// + TODO : fix not working method
 
+	// POST /api/tasks - создание задачи
 	e.POST("/api/tasks", func(c echo.Context) error {
 		var request tasks.PostTasksRequestObject
 		if err := c.Bind(&request); err != nil {
@@ -59,29 +63,33 @@ func main() {
 		}
 		return c.JSON(http.StatusOK, response)
 		})
-
-	// 	e.PATCH("/api/tasks/:id", func(c echo.Context) error {
-	// 		var request tasks.PatchTasksIdRequestObject
-	// 		id := c.Param("id") // Получаем id из параметров
-	// 		if err := c.Bind(&request); err != nil {
-	// 			return err
-	// 		}
-	// 		response, err := handler.PatchTasksId(c.Request().Context(), request) // Используем request
-	// 		if err != nil {
-	// 			return err
-	// 		}
-	// 		return c.JSON(http.StatusOK, response)
-	// 	})
 		
-	// 	e.DELETE("/api/tasks/:id", func(c echo.Context) error {
-	// 		id := c.Param("id") // Получаем id из параметров
-	// 		// Предполагается, что DeleteTasksId принимает id как строку
-	// 		err := handler.DeleteTasksId(c.Request().Context(), id) // Убедитесь, что DeleteTasksId принимает id
-	// 		if err != nil {
-	// 			return err
-	// 		}
-	// 		return c.NoContent(http.StatusNoContent)
-	// 	})
+		// PATCH /api/tasks/:id - обновление задачи
+		e.PATCH("/api/tasks/:id", func(c echo.Context) error {
+			// c.Bind - декодирует JSON-объект из тела запроса
+			// в наш request
+			var request tasks.PatchTasksIdRequestObject
+			id := c.Param("id") // Получаем id из параметров
+			if err := c.Bind(&request); err != nil {
+				return err
+			}
+			response, err := handler.PatchTasksId(c.Request().Context(), request) // Используем request
+			if err != nil {
+				return err
+			}
+			return c.JSON(http.StatusOK, response)
+		})
+		
+		// Удаление задачи по id
+		e.DELETE("/api/tasks/:id", func(c echo.Context) error {
+			id := c.Param("id") // Получаем id из параметров
+			// Предполагается, что DeleteTasksId принимает id как строку
+			err := handler.DeleteTasksId(c.Request().Context(), id) // Убедитесь, что DeleteTasksId принимает id
+			if err != nil {
+				return err
+			}
+			return c.NoContent(http.StatusNoContent)
+		})
 
 	
 
