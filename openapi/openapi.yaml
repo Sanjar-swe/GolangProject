@@ -28,26 +28,14 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Task"
-      responses: # Add responses here for the POST method
+      responses:
         "201":
           description: The created task
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
-
-components:
-  schemas:
-    Task:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: uint # так как в БД айди это только положительные числа.
-        task:
-          type: string
-        is_done:
-          type: boolean
+  /tasks/{id}:
     patch:
       summary: Update an existing task
       tags:
@@ -87,3 +75,16 @@ components:
       responses:
         "204":
           description: The task was deleted
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint # так как в БД айди это только положительные числа.
+        task:
+          type: string
+        is_done:
+          type: boolean

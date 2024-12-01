@@ -11,9 +11,19 @@ type Handler struct {
 	Service *taskService.TaskService
 }
 
+// DeleteTasksId implements tasks.StrictServerInterface.
+func (h *Handler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
+	panic("unimplemented")
+}
+
+// PatchTasksId implements tasks.StrictServerInterface.
+func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRequestObject) (tasks.PatchTasksIdResponseObject, error) {
+	panic("unimplemented")
+}
+
 // GetTasks implements tasks.StrictServerInterface.
 func (h *Handler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject) (tasks.GetTasksResponseObject, error) {
-	// Получение всех задач из сервиса	
+	// Получение всех задач из сервиса
 	allTasks, err := h.Service.GetAllTasks()
 	if err != nil {
 		return nil, err
@@ -26,14 +36,14 @@ func (h *Handler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject) (ta
 	// Заполняем слайс response всеми задачами из БД
 	for _, tsk := range allTasks {
 		task := tasks.Task{
-			Id:    &tsk.ID,
+			Id:     &tsk.ID,
 			Task:   &tsk.Task,
 			IsDone: &tsk.IsDone,
 		}
 		response = append(response, task)
 	}
-		// САМОЕ ПРЕКРАСНОЕ. Возвращаем просто респонс и nil!
-		return response, nil
+	// САМОЕ ПРЕКРАСНОЕ. Возвращаем просто респонс и nil!
+	return response, nil
 }
 
 // PostTasks implements tasks.StrictServerInterface.
@@ -42,7 +52,7 @@ func (h *Handler) PostTasks(_ context.Context, request tasks.PostTasksRequestObj
 	taskRequest := request.Body
 	// Обращаемся к сервису и создаем задачу
 	taskToCreate := taskService.Message{
-		Task : *taskRequest.Task,
+		Task:   *taskRequest.Task,
 		IsDone: *taskRequest.IsDone,
 	}
 	createdTask, err := h.Service.CreateTask(taskToCreate)
@@ -53,8 +63,8 @@ func (h *Handler) PostTasks(_ context.Context, request tasks.PostTasksRequestObj
 
 	// создаем структуру респонс
 	reponse := tasks.PostTasks201JSONResponse{
-		Id: &createdTask.ID,
-		Task: &createdTask.Task,
+		Id:     &createdTask.ID,
+		Task:   &createdTask.Task,
 		IsDone: &createdTask.IsDone,
 	}
 	// Возвращаем респонс
