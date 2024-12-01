@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/Sanjar-swe/GolangProject/internal/database"
 	"github.com/Sanjar-swe/GolangProject/internal/handlers"
@@ -33,10 +34,56 @@ func main() {
 	e.Use(middleware.Recover())
 
 
+
 	// Передаем и регистрируем хендлер в echo
 	strictHandler := tasks.NewStrictHandler(handler,nil)
 	tasks.RegisterHandlers(e, strictHandler)
 
+	// Регистрация маршрутов с адаптерами
+	e.GET("/api/tasks", func(c echo.Context) error {
+		response, err := handler.GetTasks(c.Request().Context(), tasks.GetTasksRequestObject{})
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, response)
+	})
+
+	e.POST("/api/tasks", func(c echo.Context) error {
+		var request tasks.PostTasksRequestObject
+		if err := c.Bind(&request); err != nil {
+			return err
+		}
+		response, err := handler.PostTasks(c.Request().Context(), request)
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, response)
+		})
+
+	// 	e.PATCH("/api/tasks/:id", func(c echo.Context) error {
+	// 		var request tasks.PatchTasksIdRequestObject
+	// 		id := c.Param("id") // Получаем id из параметров
+	// 		if err := c.Bind(&request); err != nil {
+	// 			return err
+	// 		}
+	// 		response, err := handler.PatchTasksId(c.Request().Context(), request) // Используем request
+	// 		if err != nil {
+	// 			return err
+	// 		}
+	// 		return c.JSON(http.StatusOK, response)
+	// 	})
+		
+	// 	e.DELETE("/api/tasks/:id", func(c echo.Context) error {
+	// 		id := c.Param("id") // Получаем id из параметров
+	// 		// Предполагается, что DeleteTasksId принимает id как строку
+	// 		err := handler.DeleteTasksId(c.Request().Context(), id) // Убедитесь, что DeleteTasksId принимает id
+	// 		if err != nil {
+	// 			return err
+	// 		}
+	// 		return c.NoContent(http.StatusNoContent)
+	// 	})
+
+	
 
 	// Регистрация маршрутов
 	// e.GET("/api/get", handler.GetTaskHandler)
