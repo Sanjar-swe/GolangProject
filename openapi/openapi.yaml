@@ -48,3 +48,42 @@ components:
           type: string
         is_done:
           type: boolean
+    patch:
+      summary: Update an existing task
+      tags:
+        - tasks
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The task ID
+      requestBody:
+        description: The task to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        "200":
+          description: The updated task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      summary: Delete an existing task
+      tags:
+        - tasks
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The task ID
+      responses:
+        "204":
+          description: The task was deleted

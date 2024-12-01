@@ -3,7 +3,6 @@ module github.com/Sanjar-swe/GolangProject
 go 1.23.3
 
 require (
-	github.com/gorilla/mux v1.8.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/oapi-codegen/runtime v1.1.1
 	gorm.io/driver/postgres v1.5.9
