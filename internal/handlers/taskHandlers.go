@@ -13,12 +13,41 @@ type Handler struct {
 
 // DeleteTasksId implements tasks.StrictServerInterface.
 func (h *Handler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
-	panic("unimplemented")
+	// Обращаемся к сервису и удаляем задачу по ID
+	err := h.Service.DeleteTaskByID(uint(request.Id))
+	if err != nil {
+		return nil, err
+	}
+	// Возвращаем nil, так как у нас нет контента для ответа
+	return nil, nil
 }
 
 // PatchTasksId implements tasks.StrictServerInterface.
 func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRequestObject) (tasks.PatchTasksIdResponseObject, error) {
-	panic("unimplemented")
+	// Распаковываем тело запроса
+	taskRequest := request.Body
+
+	// Создаем объект для обновления задачи
+	taskToUpdate := taskService.Message{
+		Task:   *taskRequest.Task,
+		IsDone: *taskRequest.IsDone,
+	}	
+
+	// Обновляем задачу в сервисе
+	updatedTask, err := h.Service.UpdateTaskByID(uint(request.Id), taskToUpdate)
+	if err != nil {
+		return nil, err
+	}
+
+	// Создаем структуру ответа
+	response := tasks.PatchTasksId200JSONResponse{
+		Id:     &updatedTask.ID,
+		Task:   &updatedTask.Task,
+		IsDone: &updatedTask.IsDone,
+	}
+
+	// Возвращаем респонс
+		return response, nil
 }
 
 // GetTasks implements tasks.StrictServerInterface.
