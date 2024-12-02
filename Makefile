@@ -41,3 +41,22 @@ commit-test:
 	git commit -m "$$msg"; \
 	git push -u origin test
 
+# 
+# Имя выходного документа
+DOC_FILE := generated_doc.md
+
+# Команда для генерации документации
+MKDOC_CMD := mkdoc
+
+# Цель по умолчанию
+.PHONY: doc
+doc:
+	@for file in *.go; do \
+		echo "Generating documentation for $$file..."; \
+		$(MKDOC_CMD) -file $$file -output $(DOC_FILE); \
+		echo "Generated documentation saved in $(DOC_FILE)"; \
+		less $(DOC_FILE); \
+		rm -f $(DOC_FILE); \
+		echo "Documentation for $$file has been removed."; \
+	done
+#
