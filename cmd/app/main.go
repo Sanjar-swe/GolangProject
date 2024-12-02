@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Sanjar-swe/GolangProject/internal/database"
-	"github.com/Sanjar-swe/GolangProject/internal/handlers"
-	"github.com/Sanjar-swe/GolangProject/internal/taskService"
-	"github.com/Sanjar-swe/GolangProject/internal/web/tasks"
+	"github.com/Sanjar-swe/GolangProject/cmd/app/internal/database"
+	"github.com/Sanjar-swe/GolangProject/cmd/app/internal/handlers"
+	"github.com/Sanjar-swe/GolangProject/cmd/app/internal/taskService"
+	"github.com/Sanjar-swe/GolangProject/cmd/app/internal/web/tasks"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -52,7 +52,7 @@ func main() {
 	// + TODO : fix not working method
 
 	// POST /api/tasks - создание задачи
-	e.POST("/api/tasks", func(c echo.Context) error {
+		e.POST("/api/tasks", func(c echo.Context) error {
 		var request tasks.PostTasksRequestObject
 		if err := c.Bind(&request); err != nil {
 			return err
@@ -65,6 +65,7 @@ func main() {
 		})
 		
 		// PATCH /api/tasks/:id - обновление задачи
+		// TODO : fix not working method
 		// e.PATCH("/api/tasks/:id", func(c echo.Context) error {
 		// 	// c.Bind - декодирует JSON-объект из тела запроса
 		// 	// в наш request
@@ -81,6 +82,7 @@ func main() {
 		// })
 		
 		// Удаление задачи по id
+		// TODO : fix not working method
 		// e.DELETE("/api/tasks/:id", func(c echo.Context) error {
 		// 	id := c.Param("id") // Получаем id из параметров
 		// 	// Предполагается, что DeleteTasksId принимает id как строку
@@ -92,25 +94,8 @@ func main() {
 		// })
 
 	
-
-	// Регистрация маршрутов
-	// e.GET("/api/get", handler.GetTasks)
-	// e.POST("/api/post", handler.PostTaskHandler)
-	// e.PATCH("/api/tasks/:id", handler.PatchTaskHandler)
-	// e.DELETE("/api/tasks/:id", handler.DeleteTaskHandler)
-
 	// Запуск сервера
 	if err := e.Start(":8080"); err != nil {
 		log.Fatalf("failed to start with err: %v", err)
 	}
-
-
-	
-
-	// router.HandleFunc("/api/get", handler.GetTaskHandler).Methods("GET")
-	// router.HandleFunc("/api/post", handler.PostTaskHandler).Methods("POST")
-	// router.HandleFunc("/api/tasks/{id}", handler.PatchTaskHandler).Methods("PATCH")
-	// router.HandleFunc("/api/tasks/{id}", handler.DeleteTaskHandler).Methods("DELETE")
-	// http.ListenAndServe(":8080", router)
 }
-
