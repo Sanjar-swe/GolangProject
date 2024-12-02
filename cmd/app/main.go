@@ -65,36 +65,36 @@ func main() {
 		})
 		
 		// PATCH /api/tasks/:id - обновление задачи
-		e.PATCH("/api/tasks/:id", func(c echo.Context) error {
-			// c.Bind - декодирует JSON-объект из тела запроса
-			// в наш request
-			var request tasks.PatchTasksIdRequestObject
-			id := c.Param("id") // Получаем id из параметров
-			if err := c.Bind(&request); err != nil {
-				return err
-			}
-			response, err := handler.PatchTasksId(c.Request().Context(), request) // Используем request
-			if err != nil {
-				return err
-			}
-			return c.JSON(http.StatusOK, response)
-		})
+		// e.PATCH("/api/tasks/:id", func(c echo.Context) error {
+		// 	// c.Bind - декодирует JSON-объект из тела запроса
+		// 	// в наш request
+		// 	var request tasks.PatchTasksIdRequestObject
+		// 	id := c.Param("id") // Получаем id из параметров
+		// 	if err := c.Bind(&request); err != nil {
+		// 		return err
+		// 	}
+		// 	response, err := handler.PatchTasksId(c.Request().Context(), request) // Используем request
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// 	return c.JSON(http.StatusOK, response)
+		// })
 		
 		// Удаление задачи по id
-		e.DELETE("/api/tasks/:id", func(c echo.Context) error {
-			id := c.Param("id") // Получаем id из параметров
-			// Предполагается, что DeleteTasksId принимает id как строку
-			err := handler.DeleteTasksId(c.Request().Context(), id) // Убедитесь, что DeleteTasksId принимает id
-			if err != nil {
-				return err
-			}
-			return c.NoContent(http.StatusNoContent)
-		})
+		// e.DELETE("/api/tasks/:id", func(c echo.Context) error {
+		// 	id := c.Param("id") // Получаем id из параметров
+		// 	// Предполагается, что DeleteTasksId принимает id как строку
+		// 	err := handler.DeleteTasksId(c.Request().Context(), id) // Убедитесь, что DeleteTasksId принимает id
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// 	return c.NoContent(http.StatusNoContent)
+		// })
 
 	
 
 	// Регистрация маршрутов
-	// e.GET("/api/get", handler.GetTaskHandler)
+	// e.GET("/api/get", handler.GetTasks)
 	// e.POST("/api/post", handler.PostTaskHandler)
 	// e.PATCH("/api/tasks/:id", handler.PatchTaskHandler)
 	// e.DELETE("/api/tasks/:id", handler.DeleteTaskHandler)

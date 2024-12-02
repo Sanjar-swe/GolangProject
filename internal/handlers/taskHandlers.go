@@ -12,17 +12,22 @@ type Handler struct {
 }
 
 // DeleteTasksId implements tasks.StrictServerInterface.
-func (h *Handler) DeleteTasksId(_ context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
-	// Обращаемся к сервису и удаляем задачу по ID
-	err := h.Service.DeleteTaskByID(uint(request.Id))
-	if err != nil {
-		return nil, err
-	}
-	// Возвращаем сообщение об успешном удалении
-	return tasks.DeleteTasksId200JSONResponse{
-		Message: "Task deleted successfully",
-	}, nil
+func (h *Handler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
+	panic("unimplemented")
 }
+
+// DeleteTasksId implements tasks.StrictServerInterface.
+// func (h *Handler) DeleteTasksId(_ context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
+// 	// Обращаемся к сервису и удаляем задачу по ID
+// 	err := h.Service.DeleteTaskByID(uint(request.Id))
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	// Возвращаем сообщение об успешном удалении
+// 	return tasks.DeleteTasksId200JSONResponse{
+// 		Message: "Task deleted successfully",
+// 	}, nil
+// }
 
 // PatchTasksId implements tasks.StrictServerInterface.
 func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRequestObject) (tasks.PatchTasksIdResponseObject, error) {
@@ -33,7 +38,7 @@ func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRe
 	taskToUpdate := taskService.Message{
 		Task:   *taskRequest.Task,
 		IsDone: *taskRequest.IsDone,
-	}	
+	}
 
 	// Обновляем задачу в сервисе
 	updatedTask, err := h.Service.UpdateTaskByID(uint(request.Id), taskToUpdate)
@@ -49,7 +54,7 @@ func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRe
 	}
 
 	// Возвращаем респонс
-		return response, nil
+	return response, nil
 }
 
 // GetTasks implements tasks.StrictServerInterface.
